@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
+//#include <sys/wait.h>
 #include <fcntl.h>
 
 /* CANNOT BE CHANGED */
@@ -23,10 +23,14 @@
 #define PROMPT "myShell >> "
 #define PROMPTSIZE sizeof(PROMPT)
 
-int 
+int
 main(int* argc, char** argv)
 {
 
-    
+printf("shell: ");
+
+
+
+
 return 0;
 }
