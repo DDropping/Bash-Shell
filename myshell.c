@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <sys/wait.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 
 /* CANNOT BE CHANGED */
@@ -32,7 +32,7 @@ main(int* argc, char** argv)
 
     char buffer[BUFFERSIZE];
     int myargc; //number of strings encountered
-    char *myargv[100]; //collection of sub-strings
+    char *myargv[100] = {NULL}; //collection of sub-strings
 
 /*===========================================================================================
 1.Implement your shell to simply initialize your shell, display a prompt, read in user
@@ -40,6 +40,7 @@ input and print it back to the console.
 ===========================================================================================*/
 
     printf("%s", PROMPT);
+
 //read user input into buffer, fill rest of buffer with \0
     memset(buffer, '\0',BUFFERSIZE );
     fgets(buffer, BUFFERSIZE, stdin);
@@ -56,6 +57,7 @@ input and print it back to the console.
 and myargc. Once parsed, print myargv and myargc to the console. Note that myargvs
 need to be null terminated for the exec commands to interpret them correctly
 ===========================================================================================*/
+//note: may need to add string terminator to end of each substring in myargv...
 
 //tokenize the substrings
     char* token = strtok(buffer, " ");
@@ -72,16 +74,20 @@ need to be null terminated for the exec commands to interpret them correctly
 //prints contents of myargv and myargc
     printf("\n");
     printf("myargc: %d\n", myargc);
-    for(int i=0; i< 100; i++){
-            printf("myargv[%d]: %s\n",i, myargv[i]);
+    int i=0;
+    while(myargv[i]){
+        printf("myargv[%d]: %s\n", i, myargv[i]);
+        i++;
     }
-    printf("myargc: %d", myargc);
     printf("\n");
 
 /*===========================================================================================
 3.Add functionality to your shell to execute simple shell commands. Start with commands like
 ls, then commands with options like ls -la /home.
 ===========================================================================================*/
+
+    if ( fork() == 0 )
+        execv( myargv[0], myargv );
 
 
 
