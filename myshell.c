@@ -46,11 +46,11 @@ input and print it back to the console.
     fgets(buffer, BUFFERSIZE, stdin);
 
 //print contents of buffer to console
-    printf("\n");
-    for ( int i = 0; i < BUFFERSIZE; i++ ){
-        putc( isprint(buffer[i]) ? buffer[i] : '.' , stdout );
-    }
-    printf("\n");
+    // printf("\n");
+    // for ( int i = 0; i < BUFFERSIZE; i++ ){
+    //     putc( isprint(buffer[i]) ? buffer[i] : '.' , stdout );
+    // }
+    // printf("\n");
 
 /*===========================================================================================
 2.Add functionality to your shell to parse user input setting the correct values for myargv
