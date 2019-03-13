@@ -23,13 +23,25 @@
 #define PROMPT "myShell >> "
 #define PROMPTSIZE sizeof(PROMPT)
 
+//ctrl+shift+c to comment
+//ctrl+shift+x to uncomment
+
 int
 main(int* argc, char** argv)
 {
 
-printf("shell: ");
+    char buffer[BUFFERSIZE];
 
 
+    printf("shell: ");
+    //memset(starting value of mem, value to be filled, number of bytes to be filled)
+    memset(buffer, '\0',BUFFERSIZE );
+    fgets(buffer, BUFFERSIZE, stdin);
+
+//    print buffer
+//    for ( int i = 0; i < BUFFERSIZE; i++ ){
+//        putc( isprint(buffer[i]) ? buffer[i] : '.' , stdout );
+//    }
 
 
 return 0;
