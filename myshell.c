@@ -34,6 +34,9 @@ main(int* argc, char** argv)
 
     char buffer[BUFFERSIZE];
     int myargc; //number of strings encountered
+
+while (true) {
+
     char *myargv[100] = {NULL}; //collection of sub-strings
 
     /*===========================================================================================
@@ -41,7 +44,6 @@ main(int* argc, char** argv)
     input and print it back to the console.
     ===========================================================================================*/
 
-while (true) {
         printf("%s", PROMPT);
 
     //read user input into buffer, fill rest of buffer with \0
@@ -86,6 +88,11 @@ while (true) {
     //break if user enters 'exit'
         if(strcmp(myargv[0], "exit") == 0) {
 			break;
+		}
+
+
+        if((strcmp(myargv[0], "ls") == 0)&& !myargv[1]) {
+			system("ls");
 		}
 
 
