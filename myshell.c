@@ -84,15 +84,26 @@ while (true) {
     3.Add functionality to your shell to execute simple shell commands. Start with commands like
     ls, then commands with options like ls -la /home.
     ===========================================================================================*/
-    
+
+    //create string from user input
+        char str_cmd[100] = "";
+        i = 0;
+        while(myargv[i] != NULL){
+            if(i>0)
+            strcat(str_cmd, " ");
+            strcat(str_cmd, myargv[i]);
+            i++;
+        }
+
+
     //break if user enters 'exit'
         if(strcmp(myargv[0], "exit") == 0) {
-			break;
+			return 0;
 		}
 
-
-        if((strcmp(myargv[0], "ls") == 0)&& !myargv[1]) {
-			system("ls");
+    //adds 'ls' functionality 
+        if( (strcmp(myargv[0], "ls") == 0) ) {
+			system(str_cmd);
 		}
 
 
