@@ -130,6 +130,26 @@ while (true) {
     these shell commands.
     ===========================================================================================*/
 
+    //implement pwd command
+        char pwd[100];
+        if (strcmp("pwd", myargv[0]) == 0) {
+            if(getcwd(pwd, sizeof(pwd)) != NULL) {
+                printf("%s\n", pwd);
+            } else {
+                printf("pwd failed");
+            }
+            
+        }
+
+    //implement cd command
+        char *dir;
+        if (strcmp(myargv[0], "cd") == 0) {
+            if(myargc > 1)
+                dir = myargv[1];
+            int status = chdir(dir);
+            if(status == -1)
+                perror("cd failed");
+        }
 
 
     /*===========================================================================================
