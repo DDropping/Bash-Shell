@@ -70,36 +70,21 @@ while (true) {
     //set myargc
         myargc=tokenNum;
 
-    //prints contents of myargv and myargc
-        printf("\n");
-        printf("myargc: %d\n", myargc);
-        int i=0;
-        while(myargv[i]){
-            printf("myargv[%d]: %s\n", i, myargv[i]);
-            i++;
-        }
-        printf("\n");
+    // //prints contents of myargv and myargc
+    //     printf("\n");
+    //     printf("myargc: %d\n", myargc);
+    //     int i=0;
+    //     while(myargv[i]){
+    //         printf("myargv[%d]: %s\n", i, myargv[i]);
+    //         i++;
+    //     }
+    //     printf("\n");
 
     /*===========================================================================================
     3.Add functionality to your shell to execute simple shell commands. Start with commands like
     ls, then commands with options like ls -la /home.
     ===========================================================================================*/
-
-    //create string from user input
-        char str_cmd[100] = "";
-        i = 0;
-        while(myargv[i] != NULL){
-            if(i>0)
-            strcat(str_cmd, " ");
-            strcat(str_cmd, myargv[i]);
-            i++;
-        }
-        strcat(str_cmd, "\0");
-
-    // //adds 'ls' functionality 
-    //         if( (strcmp(myargv[0], "ls") == 0) ) {
-    //             system(str_cmd);
-    //         }
+    //code at bottom of program
 
     //break if user enters 'exit'
         if(strcmp(myargv[0], "exit") == 0) {
@@ -111,7 +96,63 @@ while (true) {
     4.Add functionality to shell to execute input and output redirection. It is required to
     implement >, >>, and <.
     ===========================================================================================*/
+        
+        
+        pid_t id;
+        id=fork();
+        if(id == 0){
+            int fd0, fd1;
+            char input[64], output[64];
+            bool in=false, out=false;
 
+    //determine if statement is redirection
+            for(int i=0; i< myargc; i++){
+                if(strcmp(myargv[i], "<")==0){
+                    in = true;
+                    myargv[i] = NULL;
+                    strcpy(input, myargv[i+1]);
+                }
+                if(strcmp(myargv[i], ">")==0){
+                    out = true;
+                    myargv[i] = NULL;
+                    strcpy(output, myargv[i+1]);
+                }
+            }
+
+    //if input redirection(<)
+            if(in){
+                int fd0;
+                if((fd0=open(input, O_RDONLY, 0)) < 0) {
+                    perror("Could not open input file");
+                    exit(0);
+                }
+                dup2(fd0, 0);
+                close(fd0);
+            }
+
+    //if output redirection(>)
+            if(out){
+                int fd1;
+                if((fd1=creat(output, 0644)) < 0) {
+                    perror("Could not open output file");
+                    exit(0);
+                }
+                dup2(fd1, STDOUT_FILENO);
+                close(fd1);
+            }
+            execvp(*myargv, myargv);
+            perror("error: execvp");
+            exit(1);
+
+        }
+    //if error
+        else if((id) < 0){
+            printf("fork() failed!\n");
+            exit(1);
+        }
+        else{
+            wait(0);
+        }    
 
 
     /*===========================================================================================
@@ -119,7 +160,7 @@ while (true) {
     commands like : ls -la &
     ===========================================================================================*/
 
-
+    //fork code at bottom
 
     /*===========================================================================================
     6.Add functionality to your shell to execute the cd and pwd commands. Note these need
@@ -157,13 +198,13 @@ while (true) {
 
 
 
-
-
+    //===========================================================================================
+    //BOTTOM
     //===========================================================================================
      
      
-        pid_t id;
-        id=fork();
+        // pid_t id;
+        // id=fork();
 
     //parent
         if(id>0){
@@ -178,5 +219,31 @@ while (true) {
             perror("fork error");
         }
     }
+
+
+    //===========================================================================================
+    //===========================================================================================
+    //MISC.
+
+        // //create string from user input
+        // char str_cmd[100] = "";
+        // i = 0;
+        // while(myargv[i] != NULL){
+        //     if(i>0)
+        //     strcat(str_cmd, " ");
+        //     strcat(str_cmd, myargv[i]);
+        //     i++;
+        // }
+        // strcat(str_cmd, "\0");
+
+        // //adds 'ls' functionality 
+        //     if( (strcmp(myargv[0], "ls") == 0) ) {
+        //         system(str_cmd);
+        //     }
+
+    //MISC
+    //===========================================================================================
+    //===========================================================================================
+
     return 0;
 }
