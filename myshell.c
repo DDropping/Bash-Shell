@@ -162,23 +162,21 @@ while (true) {
     //===========================================================================================
      
      
-        int pid;
-        pid=fork();
-
-    //child
-        if(pid==0){ 
-            int result = execvp(myargv[0], myargv);
-            if(result == -1){
-                printf("error occured during execvp");
-                exit(1);
-            }
-            exit(0);
-        }
+        pid_t id;
+        id=fork();
 
     //parent
-        else{
-            sleep(1);
+        if(id>0){
+            wait(0);
         }
-
+    //child
+        else if(id==0){
+            int result = execvp(myargv[0], myargv);
+        }
+    //error
+        else{
+            perror("fork error");
+        }
     }
+    return 0;
 }
