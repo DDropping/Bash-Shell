@@ -94,20 +94,17 @@ while (true) {
             strcat(str_cmd, myargv[i]);
             i++;
         }
+        strcat(str_cmd, "\0");
 
+    // //adds 'ls' functionality 
+    //         if( (strcmp(myargv[0], "ls") == 0) ) {
+    //             system(str_cmd);
+    //         }
 
     //break if user enters 'exit'
         if(strcmp(myargv[0], "exit") == 0) {
 			return 0;
 		}
-
-    //adds 'ls' functionality 
-        if( (strcmp(myargv[0], "ls") == 0) ) {
-			system(str_cmd);
-		}
-
-
-
 
 
     /*===========================================================================================
@@ -156,6 +153,32 @@ while (true) {
     7.Add functionality to your shell to execute piped commands. These are commands that
     are connected by a shell pipe, |.
     ===========================================================================================*/
+    
+
+
+
+
+
+    //===========================================================================================
+     
+     
+        int pid;
+        pid=fork();
+
+    //child
+        if(pid==0){ 
+            int result = execvp(myargv[0], myargv);
+            if(result == -1){
+                printf("error occured during execvp");
+                exit(1);
+            }
+            exit(0);
+        }
+
+    //parent
+        else{
+            sleep(1);
+        }
+
     }
-return 0;
 }
