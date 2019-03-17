@@ -25,8 +25,6 @@
 #define PROMPT "myShell >> "
 #define PROMPTSIZE sizeof(PROMPT)
 
-//ctrl+shift+c to comment
-//ctrl+shift+x to uncomment
 
 int
 main(int* argc, char** argv)
@@ -71,14 +69,14 @@ while (true) {
         myargc=tokenNum;
 
     // //prints contents of myargv and myargc
-    //     printf("\n");
-    //     printf("myargc: %d\n", myargc);
-    //     int i=0;
-    //     while(myargv[i]){
-    //         printf("myargv[%d]: %s\n", i, myargv[i]);
-    //         i++;
-    //     }
-    //     printf("\n");
+        // printf("\n");
+        // printf("myargc: %d\n", myargc);
+        // int i=0;
+        // while(myargv[i]){
+        //     printf("myargv[%d]: %s\n", i, myargv[i]);
+        //     i++;
+        // }
+        // printf("\n");
 
     /*===========================================================================================
     3.Add functionality to your shell to execute simple shell commands. Start with commands like
@@ -101,9 +99,9 @@ while (true) {
         pid_t id;
         id=fork();
         if(id == 0){
-            int fd0, fd1;
-            char input[64], output[64];
-            bool in=false, out=false;
+            int fd0, fd1, fd2;
+            char input[64], output[64], append[64];
+            bool in=false, out=false, app=false;
 
     //determine if statement is redirection
             for(int i=0; i< myargc; i++){
@@ -112,12 +110,22 @@ while (true) {
                     myargv[i] = NULL;
                     strcpy(input, myargv[i+1]);
                 }
-                if(strcmp(myargv[i], ">")==0){
+                else if(strcmp(myargv[i], ">")==0){
                     out = true;
                     myargv[i] = NULL;
                     strcpy(output, myargv[i+1]);
                 }
+                else if(strcmp(myargv[i], ">>")==0){
+                    app = true;
+                    myargv[i] = NULL;
+                    strcpy(append, myargv[i+1]);
+                }
             }
+
+        //test
+            // printf(in ? "in: true\n" : "in: false\n");
+            // printf(out ? "out: true\n" : "out: false\n");
+            // printf(app ? "app: true\n" : "app: false\n");
 
     //if input redirection(<)
             if(in){
@@ -140,6 +148,19 @@ while (true) {
                 dup2(fd1, STDOUT_FILENO);
                 close(fd1);
             }
+
+    //if append redirection(>>)
+            if(app){
+                int fd2;
+                if((fd2=open(append, O_WRONLY|O_APPEND)) < 0) {
+                    perror("Could not open file");
+                    exit(0);
+                }
+                dup2(fd2, STDOUT_FILENO);
+                close(fd2);
+            }
+
+
             execvp(*myargv, myargv);
             perror("error: execvp");
             exit(1);
