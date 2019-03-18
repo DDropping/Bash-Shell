@@ -134,8 +134,7 @@ main(int* argc, char** argv)
 
         //if background
 		if (background && id == 0) {
-            printf("background item");
-			//fork();
+            //printf("background item");
 			setpgid(0, 0);
 			execvp(*myargv, myargv);
 			perror("error: background execvp");
@@ -144,7 +143,7 @@ main(int* argc, char** argv)
 
         //child
 		if (id == 0) {
-            printf("child item");
+            //printf("child item");
 
 		    //if input redirection(<)
 			if (in) {
@@ -187,7 +186,7 @@ main(int* argc, char** argv)
 		}
         //parent
 		else if (id>0 && !background) {
-            printf("parent item \n");
+            //printf("parent item \n");
 		    wait(0);
 		}
 		//if error
