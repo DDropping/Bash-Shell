@@ -89,19 +89,55 @@ main(int* argc, char** argv)
 
 
 		    bool background = false;
-			int fd0, fd1, fd2;
+			int fd0, fd1, fd2, start=0;
+            int pipe_fd[2];
 			char input[64], output[64], append[64];
-			bool in = false, out = false, app = false;
+            char *left_side[64] = {NULL};
+            char *right_side[64] = {NULL};
+			bool in = false, out = false, app = false, isPipe = false, next = false;
 
+            //determine if piped command
+            for(int i=0; i<myargc; i++){
+                if(strcmp(myargv[i], "|")==0){
+                    isPipe = true;
+                }
+            }
+                    //test: if pipe char was found
+            // if(isPipe){
+            //     printf("| was found\n");
+            // }
+
+            if(isPipe){
+                for(int i = 0; i < myargc; i++){
+                    if(strcmp(myargv[i], "|")==0){
+                        next = true;
+                        continue;
+                    }
+                    if(!next){
+                        left_side[i] = myargv[i];
+                    }
+                    if(next){
+                        right_side[start] = myargv[i];
+                        start++;
+                    }
+                }
+            }
+                    //test: prints contents of left and right side
+            // if(isPipe){
+            //     for(int i = 0; left_side[i] != NULL; i++){
+            //         printf("left %d: %s \n",i, left_side[i]);
+            //     }
+            //     for(int i = 0; right_side[i] != NULL; i++){
+            //         printf("right %d: %s \n",i, right_side[i]);
+            //     }
+            // }
 
 			//determine if should run in Background
-
 			if (strcmp(myargv[myargc - 1], "&") == 0) {
 				background = true;
 				myargv[myargc - 1] = NULL;
 				myargc = myargc - 1;
 			}
-
 
 			//determine if statement is redirection
 			for (int i = 0; i < myargc; i++) {
@@ -120,6 +156,7 @@ main(int* argc, char** argv)
 					myargv[i] = NULL;
 					strcpy(append, myargv[i + 1]);
 				}
+
 			}
 
 			//test
@@ -143,7 +180,24 @@ main(int* argc, char** argv)
 
         //child
 		if (id == 0) {
-            //printf("child item");
+            //pipe
+            if(isPipe){
+                pipe(pipe_fd);
+                if(fork()){
+                    dup2(pipe_fd[0],0);
+                    close(pipe_fd[1]);
+                    close(pipe_fd[0]);
+                    execvp(right_side[0],right_side);
+                }
+                if(fork()){
+                    dup2(pipe_fd[1],1);
+                    close(pipe_fd[1]);
+                    close(pipe_fd[0]);
+                    execvp(left_side[0],left_side);
+                }
+                exit(0);
+                
+            }
 
 		    //if input redirection(<)
 			if (in) {
@@ -178,14 +232,16 @@ main(int* argc, char** argv)
 				close(fd2);
 			}
 
-			execvp(*myargv, myargv);
-			perror("error: execvp");
-			exit(1);
+            if(!isPipe){
+			    execvp(*myargv, myargv);
+			    perror("error: execvp");
+			    exit(1);
+            }
 			
 
 		}
         //parent
-		else if (id>0 && !background) {
+		else if (id > 0 && !background) {
             //printf("parent item \n");
 		    wait(0);
 		}
