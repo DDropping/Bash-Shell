@@ -1,11 +1,2 @@
-# CSC 415 - Project 3 - My Shell
-
-## Student Name: Name here
-
-## Student ID: ID Here
-
-## Build Instructions
-
-## Run Instructions
-
-## List Extra Credit comepleted (if not attempted leave blank)
+# Linux Shell
+ * Description :  Writting a simple bash shell program that will execute simple commands. The main goal of the assignment is working with fork, pipes and exec system calls.   
